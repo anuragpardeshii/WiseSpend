@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
@@ -7,16 +7,21 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchExpenses = async () => {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/expenses', {
-        headers: { Authorization: token }
-      });
-      setExpenses(response.data);
+      try {
+        const response = await api.get('/expenses');
+        setExpenses(response.data);
+      } catch (error) {
+        console.error('Error fetching expenses:', error);
+      }
     };
 
     const fetchAIBudgetTips = async () => {
-      const response = await axios.get('http://localhost:5000/api/ai/budget-tips');
-      setTips(response.data);
+      try {
+        const response = await api.get('/ai/budget-tips');
+        setTips(response.data);
+      } catch (error) {
+        console.error('Error fetching budget tips:', error);
+      }
     };
 
     fetchExpenses();
